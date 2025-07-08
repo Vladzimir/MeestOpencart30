@@ -1,0 +1,1138 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="row">
+                <h1 class="meest-heading">{{ heading_title }} {{ heading_title_order_update_form }}</h1>
+                <div class="pull-right">
+                    <button type="submit" form="form-meest-cn" id="button-save-cn">{{ button_save_cn }}</button>
+                </div>
+            </div>
+            <div class="row">
+                <ul class="breadcrumb">
+                    {% for breadcrumb in breadcrumbs %}
+                        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{#    <div class="container-fluid">#}
+    {% if get_info_for_edit_error %}
+        <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ get_info_for_edit_error }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+    {% endif %}
+    {% if response.status == 'OK' %}
+        {% for error in error_warning %}
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-circle"></i> {{ error }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endfor %}
+{#        <div class="panel panel-default">#}
+{#            <div class="panel-heading">#}
+{#                <h3 class="panel-title"><i class="fa fa-file-text-o" aria-hidden="true"></i> {{ text_form }}</h3>#}
+{#            </div>#}
+            <div class="panel-body">
+                <input type="hidden" name="error_meesage" id="error_meesage" value="{{ error_meesage }}">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-meest-cn" class="form-horizontal">
+                    <input type="hidden" name="sender_delivery_type" id="sender_delivery_type" value="{{ parcel_info.sender.service == 'Branch' ? 'department' : 'doors' }}">
+                    <input type="hidden" name="recipient_delivery_type" id="recipient_delivery_type" value="{{ parcel_info.receiver.service == 'Branch' ? 'department' : 'doors' }}">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="panel-heading clearfix">
+                                <h3 class="panel-title">{{ text_sender }}</h3>
+                                <div class="btn-group pull-right" data-toggle="buttons">
+                                    <label class="btn btn-default btn-sm{{ parcel_info.sender.service == 'Branch' ? ' active' }}" data-toggle="tooltip" title="{{ button_department_delivery }}">
+                                        <input type="radio" name="sender_address_type" value="department">
+                                        <span class="btn-text">{{ text_branch }}</span>
+                                    </label>
+                                    <label class="btn btn-default btn-sm{{ parcel_info.sender.service == 'Door' ? ' active' }}" data-toggle="tooltip" title="{{ button_doors_delivery }}">
+                                        <input type="radio" name="sender_address_type" value="doors">
+                                        <span class="btn-text">{{ text_doors }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body" id="sender_department_delivery" style="{{ parcel_info.sender.service != 'Branch' ? ' display: none;' }}">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender_person">{{ entry_sender }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="sender_person" value="{{ parcel_info.sender.name }}" placeholder="{{ entry_phone }}" id="input-sender_person" class="form-control custom-input-70"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender_phone">{{ entry_phone }}</label>
+                                        <div class="col-sm-9">
+                                             <input type="text" name="sender_phone" value="{{ parcel_info.sender.phone }}" placeholder="{{ entry_phone }}" id="input-sender_phone" class="form-control custom-input-70"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-region">{{ entry_sender_region }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="shipping_meest2_sender_region" id="input-sender-region" class="form-control custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                                {% for region in regions %}
+                                                    <option value="{{ region.region_id }}" {% if region.region_id == branch_sender_info.region_id %}selected{% endif %}>
+                                                        {{ region.region_name_ua }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-city">{{ entry_sender_city }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="shipping_meest2_sender_city" id="input-sender-city" class="form-control custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-branch">{{ entry_branch }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="sender_branch" id="input-sender-branch" class="form-control selectpicker show-tick custom-select2" data-live-search="true">
+                                                <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" id="sender_address_delivery" style="{{ parcel_info.sender.service != 'Door' ? ' display: none;' }}">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender_person-address">{{ entry_sender }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="sender_person-address" value="{{ parcel_info.sender.name }}" placeholder="{{ entry_phone }}" id="input-sender_person" class="form-control custom-input-70"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender_phone-address">{{ entry_phone }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="sender_phone-address" value="{{ parcel_info.sender.phone }}" placeholder="{{ entry_phone }}" id="input-sender_phone" class="form-control custom-input-70"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-region-address">{{ entry_sender_region }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="sender-region-address" id="input-sender-region-address" class="form-control custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                                {% for region in regions %}
+                                                    <option value="{{ region.region_id }}" {% if region.region_id == sender_region_id_address %}selected{% endif %}>
+                                                        {{ region.region_name_ua }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-city-address">{{ entry_sender_city }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="sender_city_address" id="input-sender-city-address" class="form-control select2 custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-address">{{ text_address }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="sender_address" id="input-sender-address" class="form-control custom-select2">
+                                                    <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-building">{{ text_building }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="sender_building" id="input-sender-building" class="form-control custom-input-70" {% if parcel_info.sender.building %}value="{{ parcel_info.sender.building }}"{% endif %} placeholder="{{ text_building }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-floor">{{ text_floor }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="sender_floor" id="input-sender-floor" class="form-control custom-input-70"  {% if parcel_info.sender.floor %}value="{{ parcel_info.sender.floor }}"{% endif %} placeholder="{{ text_floor }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-sender-apartment">Apartment:</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="sender_apartment" id="input-sender-apartment" class="form-control custom-input-70"  {% if parcel_info.sender.flat %}value="{{ parcel_info.sender.flat }}"{% endif %} placeholder="Apartment">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="panel-heading clearfix">
+                                <h3 class="panel-title">{{ text_recipient }}</h3>
+                                <div class="btn-group pull-right" data-toggle="buttons">
+                                    <label class="btn btn-default btn-sm{{ parcel_info.receiver.service == 'Branch' ? ' active' }}" data-toggle="tooltip" title="{{ button_recipient_department_delivery }}">
+                                        <input type="radio" name="recipient_address_type" value="department">
+                                        <span class="btn-text">{{ text_branch }}</span>
+                                    </label>
+                                    <label class="btn btn-default btn-sm{{ parcel_info.receiver.service == 'Door' ? ' active' }}" data-toggle="tooltip" title="{{ button_recipient_doors_delivery }}">
+                                        <input type="radio" name="recipient_address_type" value="doors">
+                                        <span class="btn-text">{{ text_doors }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body" id="recipient_department_delivery" style="{{ parcel_info.receiver.service != 'Branch' ? ' display: none;' }}">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient">{{ entry_recipient }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient" value="{{ parcel_info.receiver.name }}" placeholder="{{ entry_recipient }}" id="input-recipient" class="form-control custom-input-70" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient_phone">{{ entry_phone }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient_phone" value="{{ parcel_info.receiver.phone }}" placeholder="{{ entry_phone }}" id="input-recipient_phone" class="form-control custom-input-70" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient_region">{{ entry_region }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="recipient_region" id="input-recipient_region" class="form-control custom-select2">
+                                                {% for region in regions %}
+                                                <option value="{{ region.region_id }}" {% if region.region_id == branch_recipient_info.region_id %}selected{% endif %}>
+                                                    {{ region.region_name_ua }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient_city">{{ entry_city }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="recipient_city" id="input-recipient_city" class="form-control custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient-branch" data-toggle="tooltip" data-placement="right" title="{{ recipient_department_name }}">{{ entry_branch }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="recipient_branch" id="input-recipient-branch" class="form-control selectpicker show-tick custom-select2" data-live-search="true">
+                                                <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" id="recipient_address_delivery" style="{{ parcel_info.receiver.service != 'Door' ? ' display: none;' }}">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient-name-address">{{ entry_recipient }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient-address" value="{{ parcel_info.receiver.name }}" placeholder="{{ entry_recipient }}" id="input-recipient" class="form-control custom-input-70" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient_phone-address">{{ entry_phone }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient_phone-address" value="{{ parcel_info.receiver.phone }}" placeholder="{{ entry_phone }}" id="input-recipient_phone" class="form-control custom-input-70" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient_region_address">{{ entry_region }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="recipient_region_address" id="input-recipient_region_address" class="form-control custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                                    {% for region in regions %}
+                                                        <option value="{{ region.region_id }}" {% if region.region_id == receiver_region_id_address %}selected{% endif %}>
+                                                            {{ region.region_name_ua }}
+                                                        </option>
+                                                    {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient_city_address">{{ entry_city }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="recipient_city_address" id="input-recipient_city_address" class="form-control custom-select2">
+                                                {% if receiver_city_id_address %}
+                                                    <option value="">{{ text_select }}</option>
+                                                    {% for city in cities %}
+                                                        {% if city.city_id == receiver_city_id_address %}
+                                                            <option value="{{ city.city_id }}" selected>
+                                                                {{ city.name_ua }}
+                                                            </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <option value="">{{ text_select }}</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient-address">{{ text_address }}</label>
+                                        <div class="col-sm-9 text-right">
+                                            <select name="recipient_address" id="input-recipient-address" class="form-control custom-select2">
+                                                <option value="">{{ text_select }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient-building-address">{{ text_building }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient_building_address" id="input-recipient-building-address" class="form-control custom-input-70" {% if parcel_info.receiver.building %}value="{{ parcel_info.receiver.building }}"{% endif %}placeholder="{{ text_building }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient-floor-address">{{ text_floor }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient_floor_address" id="input-recipient-floor-address" class="form-control custom-input-70" {% if parcel_info.receiver.building %}value="{{ parcel_info.receiver.floor }}"{% endif %}placeholder="{{ text_floor }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-recipient-apartment-address">{{ text_apartment }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="recipient_apartment_address" id="input-recipient-apartment-address" class="form-control custom-input-70" {% if parcel_info.receiver.building %}value="{{ parcel_info.receiver.flat }}"{% endif %} placeholder="{{ text_apartment }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="panel-heading clearfix">
+                                <h3 class="panel-title">{{ text_departure_options }}</h3>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div id="places-container">
+                                        {% for place in parcel_info.placesItems %}
+                                            <div class="place-item" data-index="{{ loop.index0 }}">
+                                                <legend class="seat-legend">{{ text_seat }}</legend>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">{{ entry_weight }}</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <input type="text" name="places[{{ loop.index0 }}][weight]" value="{{ place.weight }}" placeholder="{{ entry_weight }}" class="form-control custom-input-70"/>
+                                                            <span class="input-group-addon addon-blue">{{ text_kg }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">{{ entry_length }}</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <input type="text" name="places[{{ loop.index0 }}][length]" value="{{ place.length }}" placeholder="{{ entry_length }}" class="form-control custom-input-70"/>
+                                                            <span class="input-group-addon addon-blue">{{ text_cm }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">{{ entry_width }}</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <input type="text" name="places[{{ loop.index0 }}][width]" value="{{ place.width }}" placeholder="{{ entry_width }}" class="form-control custom-input-70"/>
+                                                            <span class="input-group-addon addon-blue">{{ text_cm }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">{{ entry_height }}</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <input type="text" name="places[{{ loop.index0 }}][height]" value="{{ place.height }}" placeholder="{{ entry_height }}" class="form-control custom-input-70"/>
+                                                            <span class="input-group-addon addon-blue">{{ text_cm }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">{{ entry_quantity }}</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <input type="text" name="places[{{ loop.index0 }}][quantity]" value="{{ place.quantity }}" placeholder="{{ entry_quantity }}" class="form-control custom-input-70"/>
+                                                            <span class="input-group-addon addon-blue">{{ text_pc }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-3 control-label">{{ entry_insurance }}</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
+                                                            <input type="text" name="places[{{ loop.index0 }}][insurance]" value="{{ place.insurance }}" placeholder="{{ entry_insurance }}" class="form-control custom-input-70"/>
+                                                            <span class="input-group-addon addon-blue">{{ text_uah }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-9 col-sm-offset-3 text-right">
+{#                                                        <button type="button" class="btn btn-danger remove-place" style="display: {{ loop.length > 1 ? 'inline-block' : 'none' }};">{{ text_delete_seat }}</button>#}
+                                                        <button type="button" class="btn btn-danger remove-place" style="display: none">{{ text_delete_seat }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="btn-container">
+                                        <button type="button" class="btn btn-success pull-right" id="add-place">{{ text_add_a_seat }}</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="panel-heading clearfix">
+                                <h3 class="panel-title">{{ text_payment }}</h3>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-delivery_payer">{{ entry_delivery_payer }}</label>
+                                        <div class="col-sm-9">
+                                            <div class="btn-group" data-toggle="buttons">
+                                                {% for v in references['payer_types'] %}
+                                                    {% if v.Ref == 'Receiver' and parcel_info.receiverPay %}
+                                                        <label class="btn btn-default active">
+                                                            <input type="radio" name="delivery_payer" value="{{ v.Ref }}" id="input-delivery_payer-{{ v.Ref }}" checked>{{ v.Description }}
+                                                        </label>
+                                                    {% elseif v.Ref == 'Sender' and not parcel_info.receiverPay %}
+                                                        <label class="btn btn-default active">
+                                                            <input type="radio" name="delivery_payer" value="{{ v.Ref }}" id="input-delivery_payer-{{ v.Ref }}" checked>{{ v.Description }}
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" name="delivery_payer" value="{{ v.Ref }}" id="input-delivery_payer-{{ v.Ref }}">{{ v.Description }}
+                                                        </label>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="input-payment_type">{{ entry_payment_type }}</label>
+                                        <div class="col-sm-9">
+                                            <div class="btn-group" data-toggle="buttons">
+                                                {% for v in references['payment_types'] %}
+                                                    {% if v.Ref == parcel_info.payType %}
+                                                        <label class="btn btn-default active">
+                                                            <input type="radio" name="payment_type" value="{{ v.Ref }}" id="input-payment_type-{{ v.Ref }}" checked>{{ v.Description }}
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="btn btn-default">
+                                                            <input type="radio" name="payment_type" value="{{ v.Ref }}" id="input-payment_type-{{ v.Ref }}">{{ v.Description }}
+                                                        </label>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="toggle-cod">{{ text_cod }}</label>
+                                        <div class="col-sm-9">
+                                            <label class="switch">
+                                                <input type="checkbox" id="toggle-cod" name="cod_toggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="cod-amount-container" style="display: none;">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label" for="input-cod-amount">{{ text_cod_amount }}</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <input type="text" id="input-cod-amount" name="cod_amount" placeholder="{{ text_enter_cod_amount }}" class="custom-input-70" />
+                                                    <span class="input-group-addon addon-blue">{{ text_uah }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group card-number-container">
+                                            <label class="col-sm-3 control-label" for="input-card-number">{{ text_card_number }}</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="input-card-number" name="card_number" placeholder="{{ text_enter_card_number }}" class="custom-input-70" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group ownername-container">
+                                            <label class="col-sm-3 control-label" for="input-ownername">{{ text_ownername }}</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="input-ownername" name="ownername" placeholder="{{ text_enter_ownername }}" class="custom-input-70" value="{{ sender_person }}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group ownermobile-container">
+                                            <label class="col-sm-3 control-label" for="input-ownermobile">{{ text_ownermobile }}</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="input-ownermobile" name="ownermobile" placeholder="{{ text_enter_ownermobile }}" class="custom-input-70" value="{{ sender_phone }}"/>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="meest2_cn_uuid" value="{{ parcel_info.parcelID }}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="panel-heading clearfix">
+                                <h3 class="panel-title">{{ text_additionally }}</h3>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="form-group parcel-number">
+                                        <label class="col-sm-3 control-label" for="input-parcel-number">{{ text_parcel_number }}</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="input-parcel-number" name="parcel_number" value="{{ parcel_info.parcelNumber }}" class="form-control custom-input-70" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+{#        </div>#}
+        {% else %}
+            <div class="alert alert-danger">
+                <p>{{ get_info_error | format(response.info.message) }}</p>
+            </div>
+        {% endif %}
+{#    </div>#}
+</div>
+
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>#}
+{#<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">#}
+{#<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />#}
+{#<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>#}
+{#<script>#}
+{#    $(document).ready(function() {#}
+
+{#        $('#input-sender-city, ' +#}
+{#            '#input-sender-address, ' +#}
+{#            '#input-sender-city-address, ' +#}
+{#            '#input-sender-branch').select2({#}
+{#            placeholder: "{{ text_select }}",#}
+{#            allowClear: true,#}
+{#            width: '100%'#}
+{#        });#}
+
+{#        $('#input-recipient_city_address').select2({#}
+{#            placeholder: "{{ text_select }}",#}
+{#            allowClear: true,#}
+{#            width: '100%'#}
+{#        });#}
+{#        $('#input-recipient_address').select2({#}
+{#            placeholder: "{{ text_select }}",#}
+{#            allowClear: true,#}
+{#            width: '100%'#}
+{#        });#}
+{#        function populateCities(region_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_cities_url }}',#}
+{#                type: 'get',#}
+{#                data: { region_id: region_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var citySelect = $('#input-sender-city');#}
+{#                    citySelect.empty();#}
+{#                    citySelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, city) {#}
+{#                        citySelect.append('<option value="' + city.city_id + '">' + city.name_ua + '</option>');#}
+{#                    });#}
+
+{#                    citySelect.val('{{ branch_sender_info.city_id }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        function populateBranches(city_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_branches_url }}',#}
+{#                type: 'get',#}
+{#                data: { city_id: city_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var branchSelect = $('#input-sender-branch');#}
+{#                    branchSelect.empty();#}
+{#                    branchSelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, branch) {#}
+{#                        branchSelect.append('<option value="' + branch.branch_id + '">' + branch.short_name + ' (' + branch.address_more_information + ') ' + '</option>');#}
+{#                    });#}
+{#                    branchSelect.select2({#}
+{#                        placeholder: "{{ text_select }}",#}
+{#                        allowClear: true,#}
+{#                        width: '100%'#}
+{#                    }).val('{{ parcel_info.sender.branchID }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        $('#input-sender-region').change(function() {#}
+{#            var region_id = $(this).val();#}
+{#            populateCities(region_id);#}
+{#        });#}
+
+{#        $('#input-sender-city').change(function() {#}
+{#            var city_id = $(this).val();#}
+{#            populateBranches(city_id);#}
+{#        });#}
+
+{#        $('#input-recipient_city').select2({#}
+{#            placeholder: "{{ text_select }}",#}
+{#            allowClear: true,#}
+{#            width: '100%'#}
+{#        });#}
+
+{#        $('#input-recipient-branch').select2({#}
+{#            placeholder: "{{ text_select }}",#}
+{#            allowClear: true,#}
+{#            width: '100%'#}
+{#        });#}
+
+{#        function populateRecipientCities(region_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_cities_url }}',#}
+{#                type: 'get',#}
+{#                data: { region_id: region_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var citySelect = $('#input-recipient_city');#}
+{#                    citySelect.empty();#}
+{#                    citySelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, city) {#}
+{#                        citySelect.append('<option value="' + city.city_id + '">' + city.name_ua + '</option>');#}
+{#                    });#}
+
+{#                    citySelect.val('{{ branch_recipient_info.city_id }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        function populateRecipientBranches(city_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_branches_url }}',#}
+{#                type: 'get',#}
+{#                data: { city_id: city_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var branchSelect = $('#input-recipient-branch');#}
+{#                    branchSelect.empty();#}
+{#                    branchSelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, branch) {#}
+{#                        branchSelect.append('<option value="' + branch.branch_id + '">' + branch.short_name + ' (' + branch.address_more_information + ') ' + '</option>');#}
+{#                    });#}
+
+{#                    branchSelect.val('{{ parcel_info.receiver.branchID }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        // Event handler when the region changes#}
+{#        $('#input-recipient_region').change(function() {#}
+{#            var region_id = $(this).val();#}
+{#            populateRecipientCities(region_id);#}
+{#        });#}
+
+{#        // Event handler when the city changes#}
+{#        $('#input-recipient_city').change(function() {#}
+{#            var city_id = $(this).val();#}
+{#            populateRecipientBranches(city_id);#}
+{#        });#}
+
+{#        // Initial population if values are already set#}
+{#        if ($('#input-recipient_region').val()) {#}
+{#            populateRecipientCities($('#input-recipient_region').val());#}
+{#        }#}
+
+{#        var codValue = '{{ parcel_info.COD|default('') }}';#}
+
+{#        if (codValue && codValue != '0') {#}
+{#            $('#toggle-cod').prop('checked', true);#}
+{#            $('#input-cod-amount').val(codValue);#}
+{#            $('.cod-amount-container').show();#}
+{#        }#}
+
+{#        $('#toggle-cod').change(function() {#}
+{#            if ($(this).is(':checked')) {#}
+{#                $('.cod-amount-container').slideDown();#}
+{#            } else {#}
+{#                $('.cod-amount-container').slideUp();#}
+{#                $('#input-cod-amount').val('');#}
+{#            }#}
+{#        });#}
+
+{#        $('input[name="recipient_address_type"]').change(function() {#}
+{#            var selectedType = $(this).val();#}
+
+{#            $('#recipient_delivery_type').val(selectedType);#}
+
+{#            $('#recipient_department_delivery').hide();#}
+{#            $('#recipient_address_delivery').hide();#}
+
+{#            if (selectedType === 'department') {#}
+{#                $('#recipient_department_delivery').show();#}
+{#            } else if (selectedType === 'doors') {#}
+{#                $('#recipient_address_delivery').show();#}
+{#            }#}
+{#        });#}
+
+{#        $('input[name="sender_address_type"]').change(function() {#}
+{#            var selectedType = $(this).val();#}
+{#            $('#sender_delivery_type').val(selectedType);#}
+
+{#            $('#sender_department_delivery').hide();#}
+{#            $('#sender_address_delivery').hide();#}
+
+{#            if (selectedType === 'department') {#}
+{#                $('#sender_department_delivery').show();#}
+{#            } else if (selectedType === 'doors') {#}
+{#                $('#sender_address_delivery').show();#}
+{#            }#}
+{#        });#}
+
+{#        function populateAddresses(city_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_addresses_url }}',#}
+{#                type: 'get',#}
+{#                data: { city_id: city_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var addressSelect = $('#input-sender-address');#}
+{#                    addressSelect.empty();#}
+{#                    addressSelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, address) {#}
+{#                        addressSelect.append('<option value="' + address.street_id + '">' + address.type_ua + ' ' + address.name_ua + '</option>');#}
+{#                    });#}
+
+{#                    addressSelect.select2({#}
+{#                        placeholder: "{{ text_select }}",#}
+{#                        allowClear: true,#}
+{#                        width: '100%'#}
+{#                    }).val('{{ parcel_info.sender.addressID }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        function populateCitiesAddress(region_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_cities_url }}',#}
+{#                type: 'get',#}
+{#                data: { region_id: region_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var citySelect = $('#input-sender-city-address');#}
+{#                    citySelect.empty();#}
+{#                    citySelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, city) {#}
+{#                        citySelect.append('<option value="' + city.city_id + '">' + city.name_ua + '</option>');#}
+{#                    });#}
+
+{#                    citySelect.val('{{ sender_city_id_address }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        function populateRecipientAddresses(city_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_addresses_url }}',#}
+{#                type: 'get',#}
+{#                data: { city_id: city_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var addressSelect = $('#input-recipient-address');#}
+{#                    addressSelect.empty();#}
+{#                    addressSelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, address) {#}
+{#                        addressSelect.append('<option value="' + address.street_id + '">' + address.type_ua + ' ' + address.name_ua + '</option>');#}
+{#                    });#}
+
+{#                    addressSelect.select2({#}
+{#                        placeholder: "{{ text_select }}",#}
+{#                        allowClear: true,#}
+{#                        width: '100%'#}
+{#                    }).val('{{ parcel_info.receiver.addressID }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        function populateRecipientCitiesAddress(region_id) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_cities_url }}',#}
+{#                type: 'get',#}
+{#                data: { region_id: region_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    var citySelect = $('#input-recipient_city_address');#}
+{#                    citySelect.empty();#}
+{#                    citySelect.append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, city) {#}
+{#                        citySelect.append('<option value="' + city.city_id + '">' + city.name_ua + '</option>');#}
+{#                    });#}
+
+{#                    citySelect.val('{{ receiver_city_id_address }}').trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+{#        if ($('#input-sender-city-address').val()) {#}
+{#            populateAddresses($('#input-sender-city-address').val());#}
+{#        }#}
+{#        if ($('#input-recipient_city_address').val()) {#}
+{#            populateRecipientAddresses($('#input-recipient_city_address').val());#}
+{#        }#}
+{#        if ($('#input-sender-region-address').val()) {#}
+{#            populateCitiesAddress($('#input-sender-region-address').val());#}
+{#        }#}
+
+{#        if ($('#input-sender-region').val()) {#}
+{#            populateCities($('#input-sender-region').val());#}
+{#        }#}
+{#        if ($('#input-sender-city').val()) {#}
+{#            populateBranches($('#input-sender-city').val());#}
+{#        }#}
+{#        $('#input-sender-region-address').change(function() {#}
+{#            var region_id = $(this).val();#}
+{#            populateCitiesAddress(region_id);#}
+{#        });#}
+
+{#        $('#input-sender-city-address').change(function() {#}
+{#            var city_id = $(this).val();#}
+{#            populateAddresses(city_id);#}
+{#        });#}
+
+{#        $('#input-recipient_city_address').change(function() {#}
+{#            var city_id = $(this).val();#}
+{#            populateRecipientAddresses(city_id);#}
+{#        });#}
+{#        if ($('input[name="recipient_address_type"]:checked').val() === 'doors' && $('#input-recipient-address').val() === '') {#}
+{#            $('#input-recipient-address').addClass('is-invalid');#}
+{#            isValid = false;#}
+{#        }#}
+{#        if ($('#input-recipient_region_address').val()) {#}
+{#            populateRecipientCitiesAddress($('#input-recipient_region_address').val());#}
+{#        }#}
+{#        if ($('#input-recipient_region').val()) {#}
+{#            populateRecipientCities($('#input-recipient_region').val());#}
+{#        }#}
+{#        $('#input-recipient_region_address').change(function() {#}
+{#            var region_id = $(this).val();#}
+{#            populateRecipientCitiesAddress(region_id);#}
+{#        });#}
+
+{#    });#}
+{#</script>#}
+{#<script type="text/javascript">#}
+{#    let placeIndex = {{ parcel_info.placesItems|length }};#}
+
+{#    document.getElementById('add-place').addEventListener('click', function() {#}
+{#        const container = document.getElementById('places-container');#}
+
+{#        const newPlace = document.createElement('div');#}
+{#        newPlace.classList.add('place-item');#}
+{#        newPlace.dataset.index = placeIndex;#}
+{#        // ${placeIndex + 1}#}
+{#        newPlace.innerHTML = `#}
+{#            <legend>{{ text_seat }}</legend>#}
+{#            <div class="form-group">#}
+{#                <label class="col-sm-3 control-label">{{ entry_weight }}</label>#}
+{#                <div class="col-sm-9">#}
+{#                    <div class="input-group">#}
+{#                        <input type="text" name="places[${placeIndex}][weight]" value="" placeholder="{{ entry_weight }}" class="form-control"/>#}
+{#                        <span class="input-group-addon">{{ text_kg }}</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label class="col-sm-3 control-label">{{ entry_length }}</label>#}
+{#                <div class="col-sm-9">#}
+{#                    <div class="input-group">#}
+{#                        <input type="text" name="places[${placeIndex}][length]" value="" placeholder="{{ entry_length }}" class="form-control" />#}
+{#                        <span class="input-group-addon">{{ text_cm }}</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label class="col-sm-3 control-label">{{ entry_width }}</label>#}
+{#                <div class="col-sm-9">#}
+{#                    <div class="input-group">#}
+{#                        <input type of text name="places[${placeIndex}][width]" value="" placeholder="{{ entry_width }}" class="form-control" />#}
+{#                        <span class="input-group-addon">{{ text_cm }}</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label class="col-sm-3 control-label">{{ entry_height }}</label>#}
+{#                <div class="col-sm-9">#}
+{#                    <div class="input-group">#}
+{#                        <input type="text" name="places[${placeIndex}][height]" value="" placeholder="{{ entry_height }}" class="form-control" />#}
+{#                        <span class="input-group-addon">{{ text_cm }}</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label class="col-sm-3 control-label">{{ entry_quantity }}</label>#}
+{#                <div class="col-sm-9">#}
+{#                    <div class="input-group">#}
+{#                        <input type="text" name="places[${placeIndex}][quantity]" value="{{ place.quantity }}" placeholder="{{ entry_quantity }}" class="form-control"/>#}
+{#                        <span class="input-group-addon">{{ text_pc }}</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="form-group">#}
+{#                <label class="col-sm-3 control-label">{{ entry_insurance }}</label>#}
+{#                <div class="col-sm-9">#}
+{#                    <div class="input-group">#}
+{#                        <input type="text" name="places[${placeIndex}}][insurance]" value="{{ place.insurance }}" placeholder="{{ entry_insurance }}" class="form-control"/>#}
+{#                        <span class="input-group-addon">{{ text_uah }}</span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <button type="button" class="btn btn-danger remove-place">{{ text_delete_seat }}</button>#}
+{#        `;#}
+
+{#        container.appendChild(newPlace);#}
+{#        placeIndex++;#}
+
+{#        document.querySelectorAll('.remove-place').forEach(button => {#}
+{#            button.style.display = 'inline-block';#}
+{#        });#}
+{#    });#}
+
+{#    document.getElementById('places-container').addEventListener('click', function(event) {#}
+{#        if (event.target.classList.contains('remove-place')) {#}
+{#            const placeItem = event.target.closest('.place-item');#}
+{#            placeItem.remove();#}
+{#            document.querySelectorAll('.place-item').forEach((item, index) => {#}
+{#                item.dataset.index = index;#}
+{#                item.querySelector('legend').textContent = `{{ text_seat }} ${index + 1}`;#}
+{#                item.querySelectorAll('input').forEach(input => {#}
+{#                    const name = input.name.match(/places\[\d+\](\[.*\])/);#}
+{#                    if (name) {#}
+{#                        input.name = `places[${index}]${name[1]}`;#}
+{#                    }#}
+{#                });#}
+{#            });#}
+
+{#            if (this.children.length === 1) {#}
+{#                this.querySelector('.remove-place').style.display = 'none';#}
+{#            }#}
+{#        }#}
+{#    });#}
+{#</script>#}
+{#<script>#}
+{#    $(document).ready(function() {#}
+{#        function validateForm() {#}
+{#            let isValid = true;#}
+{#            $('.form-control').removeClass('is-invalid');#}
+{#            $('.invalid-feedback').remove();#}
+
+{#            $('input[type="text"]:visible, select:visible').each(function() {#}
+{#                const value = $(this).val();#}
+{#                if (!value || (typeof value === 'string' && value.trim() === '')) {#}
+{#                    $(this).addClass('is-invalid');#}
+{#                    $(this).after('<div class="invalid-feedback" style="color: red;">Обов\'язкове поле</div>');#}
+{#                    isValid = false;#}
+{#                }#}
+{#            });#}
+
+
+{#            if ($('input[name="sender_address_type"]:checked').val() === 'doors' && $('#input-sender-address:visible').val().trim() === '') {#}
+{#                $('#input-sender-address').addClass('is-invalid');#}
+{#                $('#input-sender-address').after('<div class="invalid-feedback" style="color: red;">Обов\'язкове поле</div>');#}
+{#                isValid = false;#}
+{#            }#}
+
+{#            return isValid;#}
+{#        }#}
+
+{#        $('#form-meest-cn').on('submit', function(event) {#}
+{#            event.preventDefault();#}
+{#            event.stopPropagation();#}
+
+{#            if (!validateForm()) {#}
+{#                alert('{{ text_fill_required_fields }}');#}
+{#            } else {#}
+{#                this.submit();#}
+{#            }#}
+{#        });#}
+
+{#        $('input[type="text"], select').on('input change', function() {#}
+{#            const value = $(this).val();#}
+{#            if (value && value.trim() !== '') {#}
+{#                $(this).removeClass('is-invalid');#}
+{#                $(this).next('.invalid-feedback').remove();#}
+{#            }#}
+{#        });#}
+
+{#        function toggleAddressFields(selector, deliveryType, showType) {#}
+{#            $(selector).hide();#}
+{#            if (deliveryType === showType) {#}
+{#                $(selector).show();#}
+{#            }#}
+{#        }#}
+
+{#        $('input[name="sender_address_type"]').change(function() {#}
+{#            toggleAddressFields('#sender_department_delivery', $(this).val(), 'department');#}
+{#            toggleAddressFields('#sender_address_delivery', $(this).val(), 'doors');#}
+{#        });#}
+
+{#        $('input[name="recipient_address_type"]').change(function() {#}
+{#            toggleAddressFields('#recipient_department_delivery', $(this).val(), 'department');#}
+{#            toggleAddressFields('#recipient_address_delivery', $(this).val(), 'doors');#}
+{#        });#}
+
+{#        function populateCities(region_id, citySelect, defaultCity) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_cities_url }}',#}
+{#                type: 'get',#}
+{#                data: { region_id: region_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    citySelect.empty().append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, city) {#}
+{#                        citySelect.append(`<option value="${city.city_id}">${city.name_ua}</option>`);#}
+{#                    });#}
+{#                    citySelect.val(defaultCity).trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        function populateBranches(city_id, branchSelect, defaultBranch) {#}
+{#            $.ajax({#}
+{#                url: '{{ ajax_get_branches_url }}',#}
+{#                type: 'get',#}
+{#                data: { city_id: city_id },#}
+{#                dataType: 'json',#}
+{#                success: function(data) {#}
+{#                    branchSelect.empty().append('<option value="">{{ text_select }}</option>');#}
+{#                    $.each(data, function(index, branch) {#}
+{#                        branchSelect.append('<option value="' + branch.branch_id + '">' + branch.short_name + ' (' + branch.address_more_information + ') ' + '</option>');#}
+{#                    });#}
+{#                    branchSelect.val(defaultBranch).trigger('change');#}
+{#                }#}
+{#            });#}
+{#        }#}
+
+{#        $('#input-sender-region').change(function() {#}
+{#            populateCities($(this).val(), $('#input-sender-city'), '{{ branch_sender_info.city_id }}');#}
+{#        });#}
+
+{#        $('#input-sender-city').change(function() {#}
+{#            populateBranches($(this).val(), $('#input-sender-branch'), '{{ parcel_info.sender.branchID }}');#}
+{#        });#}
+
+{#        $('#input-recipient_region').change(function() {#}
+{#            populateCities($(this).val(), $('#input-recipient_city'), '{{ branch_recipient_info.city_id }}');#}
+{#        });#}
+
+{#        $('#input-recipient_city').change(function() {#}
+{#            populateBranches($(this).val(), $('#input-recipient-branch'), '{{ parcel_info.receiver.branchID }}');#}
+{#        });#}
+
+{#        $('select').select2({#}
+{#            placeholder: "{{ text_select }}",#}
+{#            allowClear: true,#}
+{#            width: '100%'#}
+{#        });#}
+{#    });#}
+{#</script>#}
+
+<script>
+    window.meest2UpdateShipmentFormUrls = {
+        ajax_get_cities_url: '{{ ajax_get_cities_url }}',
+        ajax_get_addresses_url: '{{ ajax_get_addresses_url }}',
+        ajax_get_branches_url: '{{ ajax_get_branches_url }}',
+        text_select: '{{ text_select }}',
+        place_index: {{ parcel_info.placesItems|length }},
+        branch_sender_info: {
+            city_id: '{{ branch_sender_info.city_id }}'
+        },
+        branch_recipient_info: {
+            city_id: '{{ branch_recipient_info.city_id }}'
+        },
+        parcel_info: {
+            sender: {
+                branchID: '{{ parcel_info.sender.branchID }}',
+                addressID: '{{ parcel_info.sender.addressID }}'
+            },
+            receiver: {
+                branchID: '{{ parcel_info.receiver.branchID }}',
+                addressID: '{{ parcel_info.receiver.addressID }}'
+            },
+            COD: '{{ parcel_info.COD|default('') }}',
+            cardForCODNumber: '{{ parcel_info.cardForCOD.number|default('') }}',
+            cardForCODOwnername: '{{ parcel_info.cardForCOD.ownername|default('') }}',
+            cardForCODOwnermobile: '{{ parcel_info.cardForCOD.ownermobile|default('') }}',
+        },
+        sender_city_id_address: '{{ sender_city_id_address }}',
+        receiver_city_id_address: '{{ receiver_city_id_address }}',
+        text_fill_required_fields: '{{ text_fill_required_fields }}',
+        // Добавьте сюда другие переменные, если нужно
+        {#text_select: '{{ text_select }}',#}
+        {#text_fill_required_fields: '{{ text_fill_required_fields }}',#}
+        text_seat: '{{ text_seat }}',
+        text_kg: '{{ text_kg }}',
+        text_cm: '{{ text_cm }}',
+        text_pc: '{{ text_pc }}',
+        text_uah: '{{ text_uah }}',
+        text_delete_seat: '{{ text_delete_seat }}',
+        entry_weight: '{{ entry_weight }}',
+        entry_length: '{{ entry_length }}',
+        entry_width: '{{ entry_width }}',
+        entry_height: '{{ entry_height }}',
+        entry_quantity: '{{ entry_quantity }}',
+        entry_insurance: '{{ entry_insurance }}'
+    };
+</script>
+
+{#<style>#}
+{#    .switch {#}
+{#        position: relative;#}
+{#        display: inline-block;#}
+{#        width: 30px;#}
+{#        height: 17px;#}
+{#    }#}
+
+{#    .switch input {#}
+{#        opacity: 0;#}
+{#        width: 0;#}
+{#        height: 0;#}
+{#    }#}
+
+{#    .slider {#}
+{#        position: absolute;#}
+{#        cursor: pointer;#}
+{#        top: 0;#}
+{#        left: 0;#}
+{#        right: 0;#}
+{#        bottom: 0;#}
+{#        background-color: #ccc;#}
+{#        -webkit-transition: .4s;#}
+{#        transition: .4s;#}
+{#    }#}
+
+{#    .slider:before {#}
+{#        position: absolute;#}
+{#        content: "";#}
+{#        height: 13px;#}
+{#        width: 13px;#}
+{#        left: 2px;#}
+{#        bottom: 2px;#}
+{#        background-color: white;#}
+{#        -webkit-transition: .4s;#}
+{#        transition: .4s;#}
+{#    }#}
+
+{#    input:checked + .slider {#}
+{#        background-color: #2196F3;#}
+{#    }#}
+
+{#    input:focus + .slider {#}
+{#        box-shadow: 0 0 1px #2196F3;#}
+{#    }#}
+
+{#    input:checked + .slider:before {#}
+{#        -webkit-transform: translateX(13px);#}
+{#        -ms-transform: translateX(13px);#}
+{#        transform: translateX(13px);#}
+{#    }#}
+
+{#    .slider.round {#}
+{#        border-radius: 17px;#}
+{#    }#}
+
+{#    .slider.round:before {#}
+{#        border-radius: 50%;#}
+{#    }#}
+{#    .is-invalid {#}
+{#        border-color: red;#}
+{#    }#}
+{#</style>#}

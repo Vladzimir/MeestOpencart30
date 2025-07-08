@@ -1,0 +1,739 @@
+/* === Google Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+/* === Header === */
+.page-header {
+    background-color: #f8f9fc;
+    padding: 24px 30px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.meest2-body {
+    background-color: #f8f9fc;
+    padding: 0px 50px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+#content {
+    background-color: #f8f9fc !important;
+}
+/*.meest2-body {*/
+/*    padding: 24px 30px !important;*/
+/*    background-color: #f8f9fc !important;*/
+/*}*/
+
+.title-wrapper h1#heading-title,
+.meest2-page-header h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 130%;
+    color: #0061AF;
+    margin: 0 0 10px 0;
+}
+
+.meest2-page-header h1 {
+    font-weight: 500;
+    font-size: 20px;
+    color: #000000;
+    margin: 0 0 20px 0;
+}
+
+/* === Breadcrumb === */
+.custom-breadcrumb {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 130%;
+}
+
+.custom-breadcrumb li.breadcrumb-item a {
+    color: #89A6CC;
+    font-weight: 500;
+}
+
+.custom-breadcrumb li.breadcrumb-item:last-child a {
+    color: #0061AF;
+    font-weight: 700;
+}
+
+.custom-breadcrumb li + li::before {
+    content: "›";
+    color: #89A6CC;
+    font-size: 30px;
+    font-weight: 400;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 8px 0;
+}
+
+/* === Tabs === */
+.nav-tabs {
+    display: flex;
+    gap: 5px;
+    border-bottom: none;
+    margin-bottom: 20px;
+}
+
+.nav-tabs > li > a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 131px;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 130%;
+    text-align: center;
+    text-decoration: none;
+    padding: 0;
+    border: none;
+    background-color: #EBF1FB;
+    color: #0061AF;
+}
+
+.nav-tabs > li > a:hover {
+    background-color: #dce7f7;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+    background-color: #0061AF;
+    color: #FFFFFF;
+    border: none;
+}
+
+/* === Панель формы === */
+.panel.panel-default {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: none;
+}
+
+.panel .form-group {
+    margin-bottom: 20px;
+}
+
+.panel .form-group label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 130%;
+    color: #0061AF;
+}
+
+.panel .form-control {
+    background-color: #F5F7FB;
+    color: #89A6CC;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 140%;
+    border-radius: 5px;
+    padding: 17px 10px 17px 16px;
+    border: none;
+    box-shadow: none;
+    height: auto;
+}
+
+.meest2-label {
+    background-color: #F5F7FB !important;
+    color: #89A6CC !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 140% !important;
+    border-radius: 5px !important;
+    padding: 17px 10px 17px 16px !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: auto !important;
+}
+
+.meest2-div-text {
+    width: 37px !important;
+    height: 21px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 500;
+    font-size: 16px !important;
+    line-height: 130%;
+    vertical-align: middle;
+    color: #0061AF !important;
+
+    /*background-color: #F5F7FB !important;*/
+    /*color: #89A6CC !important;*/
+    /*font-family: 'Montserrat', sans-serif !important;*/
+    /*font-size: 16px !important;*/
+    /*font-weight: 400 !important;*/
+    /*line-height: 140% !important;*/
+    /*border-radius: 5px !important;*/
+    /*padding: 17px 10px 17px 16px !important;*/
+    /*border: none !important;*/
+    /*box-shadow: none !important;*/
+    /*height: auto !important;*/
+}
+
+/*meest2-div-input {*/
+/*    width: 600px !important;*/
+/*    height: 47px !important;*/
+/*    gap: 70px !important;*/
+/*    border-radius: 5px !important;*/
+/*    padding-top: 17px !important;*/
+/*    padding-right: 10px !important;*/
+/*    padding-bottom: 17px !important;*/
+/*    padding-left: 16px !important;*/
+/*    background: #FFFFFF !important;*/
+/*}*/
+
+.meest2-input-cost {
+    width: 400px !important;
+    height: 47px !important;
+    gap: 70px !important;
+    border-radius: 5px !important;
+    padding-top: 17px !important;
+    padding-right: 10px !important;
+    padding-bottom: 17px !important;
+    padding-left: 16px !important;
+    background: #FFFFFF !important;
+}
+
+.meest2-select-unselect {
+    /*width: 1030px !important;*/
+    height: 18px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    line-height: 130% !important;
+    vertical-align: middle !important;
+    color: #0061AF !important;
+    padding-top: 17px !important;
+}
+
+.panel .form-control::placeholder,
+.panel .form-control option {
+    color: #89A6CC;
+}
+
+.panel .form-control:focus {
+    box-shadow: none;
+    border: none;
+    outline: none;
+}
+
+/* === Delivery Method === */
+.delivery-method-box {
+    background-color: #F5F7FB;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.delivery-method-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.delivery-method-line .form-check-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    color: #89A6CC;
+}
+
+.delivery-method-line .form-check-input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 26px;
+    height: 24px;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1.5px solid #0061AF;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+}
+
+.delivery-method-line .form-check-input:checked {
+    background-color: #0061AF;
+    border-color: #0061AF;
+}
+
+.delivery-method-line .form-check-input:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    width: 12px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg);
+    box-sizing: border-box;
+}
+
+.font-cost {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 130%;
+    color: #0061AF;
+    text-align: right;
+}
+
+/* === Select All / Unselect All === */
+.btn-link {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0061AF;
+    text-decoration: none;
+    background-color: transparent;
+    padding: 0;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* === Info box (Token help) === */
+.meest2-info-box {
+    background-color: #EAF3FC;
+    border-left: 4px solid #0061AF;
+    padding: 16px;
+    margin-top: 12px;
+    border-radius: 8px;
+}
+
+.meest2-info-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0061AF;
+    margin-bottom: 8px;
+}
+
+.meest2-info-list {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.meest2-info-list li,
+.meest2-calculate-info {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #0061AF;
+}
+
+/* === Icon Buttons === */
+.btn-icon-save,
+.btn-icon-add {
+    width: 41px;
+    height: 37px;
+    background-color: #fff;
+    border: 1px solid #0061AF;
+    border-radius: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.btn-icon-save i,
+.btn-icon-add i {
+    color: #0061AF;
+    font-size: 18px;
+}
+
+.btn-icon-add i::before {
+    content: "+";
+    font-size: 26px;
+    line-height: 1;
+}
+
+input.styled-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    width: 12px;
+    height: 8px;
+    border: solid #FFFFFF;
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg);
+    box-sizing: content-box;
+}
+
+.custom-table-wrapper {
+    background-color: #F5F7FB;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-family: 'Inter', sans-serif;
+}
+
+.custom-table-row {
+    display: grid;
+    grid-template-columns: 150px 200px 100px 1fr 80px;
+    gap: 16px;
+    align-items: center;
+}
+
+.custom-table-row.header {
+    font-weight: 600;
+    color: #0061AF;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.custom-table-row > div {
+    color: #0061AF;
+    font-size: 15px;
+}
+
+.custom-contracts-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f5f7fc;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #0061AF;
+    margin-top: 16px;
+}
+
+.custom-contracts-table th,
+.custom-contracts-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #d6dcef;
+}
+
+.custom-contracts-table thead {
+    background-color: #e9f0fb;
+    font-weight: 600;
+    font-size: 16px;
+    color: #0061AF;
+}
+
+.custom-contracts-table tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-contracts-table td:last-child {
+    text-align: left;
+}
+
+.select2-container .select2-selection--single {
+    background-color: #F5F7FB !important;
+    color: #89A6CC !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 140% !important;
+    border-radius: 5px !important;
+    padding: 17px 10px 17px 16px !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: auto !important;
+}
+
+/* Список выпадающих опций */
+.select2-container--default .select2-results__option {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+    color: #0061AF !important;
+    padding: 10px 16px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* Наведение мышки */
+.select2-container--default .select2-results__option--highlighted {
+    background-color: #89A6CC !important;
+    color: #0061AF !important;
+}
+
+/* Выделенный пункт */
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: #89A6CC !important;
+    color: #0061AF !important;
+}
+
+/* Общий стиль выпадающего списка */
+.select2-dropdown {
+    border-radius: 5px !important;
+    border: none !important;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden !important;
+    background-color: #F5F7FB !important;
+}
+
+.select2-container--default .select2-results__option,
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-selection__placeholder
+{
+    color: #89A6CC !important;
+}
+
+/* Стили стрелки обычного select */
+select.form-control {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='9' height='5' viewBox='0 0 9 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5L4.5 4.5L8.5 0.5' stroke='%230061AF' stroke-width='1.5'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+    background-size: 9px 5px !important;
+    padding-right: 40px !important;
+}
+
+/* Обертка select2 */
+.select2-container .select2-selection--single {
+    position: relative !important;
+    background-color: #F5F7FB !important;
+    border: none !important;
+    border-radius: 8px !important;
+    height: 47px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 40px 0 16px !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+}
+
+/* Текст выбранного элемента */
+.select2-selection__rendered {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    color: #0061AF !important;
+    line-height: 140% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Иконка стрелки */
+.select2-selection__arrow {
+    position: absolute !important;
+    top: 50% !important;
+    right: 16px !important;
+    transform: translateY(-50%) !important;
+    width: 9px !important;
+    height: 5px !important;
+    background: url("data:image/svg+xml,%3Csvg width='9' height='5' viewBox='0 0 9 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.5 0.5L4.5 4.5L8.5 0.5' stroke='%230061AF' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat center center !important;
+    background-size: 9px 5px !important;
+    border: none !important;
+}
+
+/* Скрыть стандартную стрелку */
+.select2-selection__arrow b {
+    display: none !important;
+}
+
+.select2-container--default .select2-selection__clear {
+    display: inline-block !important;
+    position: absolute !important;
+    right: 16px !important; /* было 40px */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 12px !important;
+    height: 12px !important;
+    color: transparent !important;
+    text-indent: -9999px !important;
+    overflow: hidden !important;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cline x1='3' y1='3' x2='9' y2='9' stroke='%230061AF' stroke-width='2'/%3E%3Cline x1='9' y1='3' x2='3' y2='9' stroke='%230061AF' stroke-width='2'/%3E%3C/svg%3E") no-repeat center center !important;
+    background-size: contain !important;
+    cursor: pointer !important;
+    z-index: 2 !important;
+}
+
+.btn.btn-primary {
+    background-color: #0061AF !important;
+    border-color: #0061AF !important;
+
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+    color: #FFFFFF !important;
+
+    width: 148px;
+    height: 40px;
+    border-radius: 5px !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.btn.btn-primary:hover {
+    background-color: #00509C !important;
+    border-color: #00509C !important;
+}
+
+.btn-delete-contact,
+.btn-delete-contract {
+    background-color: #FFFFFF !important;
+    border: 1px solid #0061AF !important;
+
+    color: #0061AF !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+
+    width: 148px;
+    height: 40px;
+    border-radius: 5px !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.btn-delete-contact:hover,
+.btn-delete-contract:hover {
+    background-color: #F8F8F8 !important;
+}
+
+#tab-help {
+    color: #89A6CC !important;
+}
+
+.bg_load {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    top: 0;
+    left: 0;
+    z-index: 9998;
+    display: none;
+}
+
+.loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: none;
+    text-align: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid #0061AF;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.message {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #0061AF;
+}
+
+.custom-control.custom-switch {
+    padding-left: 0;
+}
+.custom-control.custom-switch .custom-control-input {
+    position: absolute;
+    left: -9999px;
+}
+
+.custom-control.custom-switch {
+    padding-left: 0;
+}
+.custom-control.custom-switch .custom-control-input {
+    position: absolute;
+    left: -9999px;
+}
+
+
+.custom-control.custom-switch .custom-control-label {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 32px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.custom-control.custom-switch .custom-control-label::before {
+    content: "Off";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 8px;
+    background: #ccc;
+    color: #666;
+    font-size: 12px;
+    line-height: 32px;
+    text-align: right;
+    border-radius: 32px;
+    transition: background .3s, color .3s, content .3s, text-align .3s;
+}
+
+.custom-control.custom-switch .custom-control-label::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform .3s;
+}
+
+.custom-control.custom-switch .custom-control-input:checked + .custom-control-label::before {
+    content: "On";
+    background: #0061AF;
+    color: #fff;
+    text-align: left;
+}
+
+.custom-control.custom-switch .custom-control-input:checked + .custom-control-label::after {
+    transform: translateX(28px);
+}
+

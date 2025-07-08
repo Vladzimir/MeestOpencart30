@@ -1,0 +1,28 @@
+.dropdown-btn {
+    background-color: #EBF1FB !important;
+    border: none !important;
+    border-radius: 5px !important;
+    width: 60px;
+    height: 37px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #0061AF !important;
+    padding: 0 8px;
+    cursor: pointer;
+}
+
+.dropdown-btn-icon {
+    font-size: 16px;
+    color: #0061AF !important;
+    margin-left: 5px;
+}
+
+.dropdown-btn-caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #0061AF;
+}

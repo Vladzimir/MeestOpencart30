@@ -1,0 +1,504 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{{ text_orders_title }}</h1>
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #3498db; color: white;">
+                        <i class="fa fa-print"></i>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" id="dropdown-options" style="background-color: #f8f9fa; border-radius: 5px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                        <li style="padding: 5px;">
+                            <button class="dropdown-item" id="option-sticker100" style="width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 3px; margin: 3px 0;">{{ text_sticker_100 }}</button>
+                        </li>
+                        <li style="padding: 5px;">
+                            <button class="dropdown-item" id="option-sticker100A4" style="width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 3px; margin: 3px 0;">{{ text_sticker_100A4 }}</button>
+                        </li>
+                        <li style="padding: 5px;">
+                            <button class="dropdown-item" id="option-declaration" style="width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 3px; margin: 3px 0;">{{ text_declaration }}</button>
+                        </li>
+                        <li style="padding: 5px;">
+                            <button class="dropdown-item" id="option-register" style="width: 100%; background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 3px; margin: 3px 0;">{{ text_register }}</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-list"></i> {{ text_orders_title }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all-orders"></th>
+                                <th><a href="{{ url_link }}&sort=order_id&order={{ sort == 'order_id' and order == 'ASC' ? 'DESC' : 'ASC' }}">{{ column_order_id }}</a></th>
+                                <th>{{ column_status }}</th>
+                                <th><a href="{{ url_link }}&sort=date_added&order={{ sort == 'date_added' and order == 'ASC' ? 'DESC' : 'ASC' }}">{{ column_date_added }}</a></th>
+                                <th>{{ column_action }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if orders %}
+                                {% for order in orders %}
+                                    {% if order.shipping_code in ['meest2.warehouse', 'meest2.courier', 'meest2.postomat'] %}
+                                        <tr>
+                                            <td><input type="checkbox" class="order-checkbox" value="{{ order.order_id }}"></td>
+                                            <td>{{ order.order_id }}</td>
+{#                                            <td>{{ order.status }}</td>#}
+                                            <td id="order-status-{{ order.order_id }}">{{ order.status }}</td>
+                                            <td>{{ order.date_added }}</td>
+                                            <td class="meest-action-{{ order.order_id }}">
+                                                {% if order.shipping_code == 'meest2.warehouse' or order.shipping_code == 'meest2.courier' or order.shipping_code == 'meest2.postomat' %}
+                                                    <div class="btn-group">
+{#                                                        <button type="button" class="btn btn-primary"><i class="fa fa-file-text-o"></i></button>#}
+{#                                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#                                                            <span class="caret"></span>#}
+{#                                                        </button>#}
+                                                        <button type="button"
+                                                                class="btn btn-danger dropdown-toggle dropdown-btn"
+                                                                data-toggle="dropdown"
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                            <i class="fa fa-file-o dropdown-btn-icon"></i>
+                                                            <span class="dropdown-btn-caret"></span>
+                                                        </button>
+
+                                                        <ul class="dropdown-menu">
+                                                            {% if order.meest2_cn_uuid != 'None' and order.meest2_cn_uuid is not empty %}
+                                                                <li><a href="{{ get_parcel_info }}&parcel_id={{ order.meest2_cn_uuid }}" class="dropdown-item">View Meest CN Info</a></li>
+                                                                <li><a href="{{ order_update_form }}&parcel_id={{ order.meest2_cn_uuid }}" class="dropdown-item">Edit Meest CN</a></li>
+                                                            {% else %}
+                                                                <li><a href="{{ order_form }}&order_id={{ order.order_id }}" class="dropdown-item">Create Meest CN</a></li>
+                                                            {% endif %}
+                                                            <li><a href="#" style="display: none;">hide</a></li>
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                                {% if order.meest2_registerID %}
+                                                    <button type="button" class="btn btn-danger" onclick="unregisterPickup('{{ order.meest2_registerID }}', '{{ order.order_id }}')">{{ button_unregister }}</button>
+                                                {% elseif order.meest2_cn_uuid and order.meest2_sender_address_pick_up %}
+                                                    <button type="button" class="btn btn-primary" onclick="openModal({{ order.order_id }})">{{ button_create_pickup }}</button>
+                                               {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">{{ text_no_orders }}</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            {{ pagination }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="callModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{ text_create_pickup }}</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="callForm">
+                        <div class="form-group">
+                            <label for="date">{{ label_pickup_date }}</label>
+                            <select class="form-control" id="date" name="date" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">{{ label_pickup_time }}</label>
+                            <select class="form-control" id="time" name="time" required></select>
+                        </div>
+                        <input type="hidden" id="orderId" name="order_id">
+                        <button type="button" class="btn btn-success" onclick="submitForm()">{{ button_create_pickup }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script>
+    $('#select-all-orders').click(function() {
+        $('.order-checkbox').prop('checked', this.checked);
+    });
+
+    $('#print-all').click(function() {
+        $.ajax({
+            url: '{{ print_all_orders_url }}',
+            type: 'POST',
+            success: function(response) {
+                window.open(response, '_blank');
+            },
+            error: function() {
+                alert('{{ error_print }}');
+            }
+        });
+    });
+
+    $('#print-selected').click(function() {
+        var selectedOrders = [];
+        $('.order-checkbox:checked').each(function() {
+            selectedOrders.push($(this).val());
+        });
+
+        if (selectedOrders.length === 0) {
+            alert('{{ error_selected_orders }}');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ print_selected_orders_url }}',
+            type: 'POST',
+            data: { orders: selectedOrders },
+            success: function(response) {
+                window.open(response, '_blank');
+            },
+            error: function() {
+                alert('{{ error_print }}');
+            }
+        });
+    });
+
+    function openModal(orderId) {
+        $('#orderId').val(orderId);
+        $('#date').empty();
+        $('#time').empty();
+        loadAvailableTimeSlots(orderId);
+        $('#callModal').modal('show');
+    }
+
+    function loadAvailableTimeSlots(orderId) {
+        showLoader('Loading available dates...');
+        $('#date, #time').prop('disabled', true);
+
+        $.ajax({
+            url: '{{ available_time_slots }}',
+            type: 'GET',
+            data: { order_id: orderId },
+            dataType: 'json',
+            success: function(response) {
+                removeLoader();
+                if (response.error) {
+                    alert('Error: ' + response.error);
+                    $('#callModal').modal('hide');
+                    return;
+                }
+
+                var data = response.result;
+
+                var availableDates = data.availableDates.filter(function(date) {
+                    return date.isAvailable;
+                });
+
+                $('#date').empty();
+
+                availableDates.forEach(function(item) {
+                    var formattedDate = formatDate(item.date);
+                    $('#date').append($('<option>', {
+                        value: item.date,
+                        text: formattedDate
+                    }));
+                });
+
+                var availableTimeSlots = data.availableTimeSlots.filter(function(slot) {
+                    return slot.type === 'PickUp';
+                });
+
+                $('#date').off('change').on('change', function() {
+                    var selectedDate = $('#date').val();
+                    $('#time').empty();
+
+                    if (availableTimeSlots.length > 0) {
+                        availableTimeSlots.forEach(function(slot) {
+                            $('#time').append($('<option>', {
+                                value: slot.timeFrom + ' - ' + slot.timeTo,
+                                text: slot.timeFrom + ' - ' + slot.timeTo
+                            }));
+                        });
+                    } else {
+                        $('#time').append($('<option>', {
+                            value: '',
+                            text: 'No time slots available',
+                            disabled: true
+                        }));
+                    }
+                });
+
+                if (availableDates.length > 0) {
+                    $('#date').val(availableDates[0].date).trigger('change');
+                } else {
+                    $('#date').append($('<option>', {
+                        value: '',
+                        text: 'No dates available',
+                        disabled: true
+                    }));
+                    $('#time').append($('<option>', {
+                        value: '',
+                        text: 'No time slots available',
+                        disabled: true
+                    }));
+                }
+
+                $('#date, #time').prop('disabled', false);
+            },
+            error: function() {
+                removeLoader();
+                alert('{{ error_create_pickup }}');
+                $('#callModal').modal('hide');
+            }
+        });
+    }
+
+    function formatDate(dateString) {
+        var date = new Date(dateString);
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        return (day < 10 ? '0' + day : day) + '.' +
+            (month < 10 ? '0' + month : month) + '.' + year;
+    }
+
+    function submitForm() {
+        var orderId = $('#orderId').val();
+        var date = $('#date').val();
+        var timeFrom = $('#time option:selected').val().split(' - ')[0];
+        var timeTo = $('#time option:selected').val().split(' - ')[1];
+
+        $.ajax({
+            url: '{{ create_register_pickup_url }}',
+            type: 'POST',
+            data: {
+                order_id: orderId,
+                date: date,
+                time_from: timeFrom,
+                time_to: timeTo
+            },
+            success: function(response) {
+                $('#callModal').modal('hide');
+                alert('{{ button_create_pickup }}');
+                var buttonCell = $('.meest-action-' + orderId);
+                buttonCell.html('<button type="button" class="btn btn-danger" onclick="unregisterPickup(\'' + response.result + '\', ' + orderId + ')">{{ button_unregister }}</button>');
+            },
+            error: function() {
+                alert('{{ error_create_pickup }}');
+            }
+        });
+    }
+
+    function unregisterPickup(registerID, orderID) {
+        if (confirm('{{ remove_delete_pickup }}')) {
+            $.ajax({
+                url: '{{ unregisterPickup_url }}',
+                type: 'POST',
+                data: { register_id: registerID, order_id: orderID },
+                success: function(response) {
+                    alert('{{ button_unregister }}');
+                    var buttonCell = $('.meest-action-' + orderID);
+                    buttonCell.html('<button type="button" class="btn btn-primary" onclick="openModal(' + orderID + ')">{{ button_create_pickup }}</button>');
+                },
+                error: function() {
+                    alert('{{ error_delete_pickup }}');
+                }
+            });
+        }
+    }
+
+    $('#option-sticker100').click(function() {
+        var selectedOrders = [];
+        $('.order-checkbox:checked').each(function() {
+            selectedOrders.push($(this).val());
+        });
+
+        if (selectedOrders.length === 0) {
+            alert('{{ error_selected_orders }}');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ get_parcel_uuids }}',
+            type: 'POST',
+            data: { orders: selectedOrders },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var parcelUUIDs = response.uuids.join(',');
+                    var apiUrl = 'https://api.meest.com/v3.0/openAPI/print/sticker100/' + parcelUUIDs + '?page=1';
+                    window.open(apiUrl, '_blank');
+                } else {
+                    alert('{{ error_print }}');
+                }
+            },
+            error: function() {
+                alert('{{ error_print }}');
+            }
+        });
+    });
+
+    $('#option-sticker100A4').click(function() {
+        var selectedOrders = [];
+        $('.order-checkbox:checked').each(function() {
+            selectedOrders.push($(this).val());
+        });
+
+        if (selectedOrders.length === 0) {
+            alert('{{ error_selected_orders }}');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ get_parcel_uuids }}',
+            type: 'POST',
+            data: { orders: selectedOrders },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var parcelUUIDs = response.uuids.join(',');
+                    var apiUrl = 'https://api.meest.com/v3.0/openAPI/print/sticker100A4/' + parcelUUIDs + '?position=1';
+                    window.open(apiUrl, '_blank');
+                } else {
+                    alert('{{ error_print }}');
+                }
+            },
+            error: function() {
+                alert('{{ error_print }}');
+            }
+        });
+    });
+
+    $('#option-declaration').click(function() {
+        var selectedOrders = [];
+        $('.order-checkbox:checked').each(function() {
+            selectedOrders.push($(this).val());
+        });
+
+        if (selectedOrders.length === 0) {
+            alert('{{ error_selected_orders }}');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ get_parcel_uuids }}',
+            type: 'POST',
+            data: { orders: selectedOrders },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var parcelUUIDs = response.uuids.join(',');
+                    var apiUrl = 'https://api.meest.com/v3.0/openAPI/print/declaration/' + parcelUUIDs + '/pdf';
+                    window.open(apiUrl, '_blank');
+                } else {
+                    alert('{{ error_print }}');
+                }
+            },
+            error: function() {
+                alert('{{ error_print }}');
+            }
+        });
+    });
+
+    $('#option-register').click(function() {
+        var selectedOrders = [];
+        $('.order-checkbox:checked').each(function() {
+            selectedOrders.push($(this).val());
+        });
+
+        if (selectedOrders.length === 0) {
+            alert('{{ error_selected_orders }}');
+            return;
+        }
+
+        $.ajax({
+            url: '{{ get_register_ids }}',
+            type: 'POST',
+            data: { orders: selectedOrders },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var registerIDs = response.register_ids.join(',');
+                    var apiUrl = 'https://api.meest.com/v3.0/openAPI/print/register/' + registerIDs + '/pdf';
+                    window.open(apiUrl, '_blank');
+                } else {
+                    alert('{{ error_print }}');
+                }
+            },
+            error: function() {
+                alert('{{ error_print }}');
+            }
+        });
+    });
+
+    function showLoader(message) {
+        if ($('#custom-loader').length === 0) {
+            $('body').append(`
+            <div id="custom-loader" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); text-align: center;">
+                    <div class="loader-animation" style="margin-bottom: 15px;">
+                        <svg style="width: 50px; height: 50px;" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="100" stroke-dashoffset="0">
+                                <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
+                            </circle>
+                        </svg>
+                    </div>
+                    <p id="loader-message" style="font-size: 16px; color: #333;">${message || 'Loading...'}</p>
+                </div>
+            </div>
+        `);
+        }
+
+        $('#loader-message').text(message || 'Loading...');
+        $('#custom-loader').show();
+    }
+
+
+    function removeLoader() {
+        $('#custom-loader').hide();
+    }
+
+    function updateOrderStatuses() {
+        var visibleOrders = {{ orders|json_encode|raw }};
+        var orderIds = visibleOrders.map(function(order) {
+            return order.order_id;
+        });
+
+        $.ajax({
+            url: '{{ update_order_statuses }}',
+            type: 'GET',
+            data: { order_ids: orderIds },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success && response.data) {
+                    $.each(response.data, function(orderId, status) {
+                        $('#order-status-' + orderId).html(status);
+                    });
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error updating order statuses:', textStatus, errorThrown);
+                console.log('Response Text:', jqXHR.responseText);
+            }
+        });
+    }
+
+    updateOrderStatuses();
+    setInterval(updateOrderStatuses, 60000);
+
+</script>

@@ -1,0 +1,113 @@
+<script>
+    $('input[type="radio"][name="shipping_method"]').change(function(){
+        var val = $(this).val();
+        if (val.indexOf('meest2.') != -1) {
+            $('.data-meest').remove();
+            meest2();
+        } else {
+            $('.data-meest').remove();
+        }
+    });
+    var meestDeleviry = new Array("meest2.courier", "meest2.postomat", "meest2.warehouse");
+    function meest2(){
+        var active_ship = $('input[type="radio"][name="shipping_method"]:checked');
+        var meest_service = active_ship.val();
+        if (meestDeleviry.indexOf(meest_service) != -1) {
+            if (meest_service =='meest2.postomat') {
+                var html = '</label><span  class="data-meest" data-meest="postomat"><br><?php echo $text_meest2_postomat; ?><input type="text" class="form-control" data-meest="postomat" /></span><label class="data-meest">';
+                active_ship.parent().after(html);
+                let address = localStorage.getItem(meest_service);
+                if (address == null ) {
+                    address = active_ship.attr('data-address');
+                    if (address === undefined ) { address = ''; }
+                }
+                if (address) {
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent(address));
+                }
+                $('input[data-meest=postomat]').val(address).attr('value',address);
+                $('span[data-meest=postomat] input').on('change',  function() {
+                    $('#input-shipping-address-1').val($(this).val());
+                    localStorage.setItem(meest_service, $(this).val());
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent($(this).val()));
+                });
+            } else if (meest_service =='meest2.warehouse') {
+                var html = '</label><span  class="data-meest" data-meest="warehouse"><br><?php echo $text_meest2_warehouse; ?><input type="text" class="form-control" data-meest="warehouse" /></span><label class="data-meest">';
+                active_ship.parent().after(html);
+
+                let address = localStorage.getItem(meest_service);
+                if (address == null ) {
+                    address = active_ship.attr('data-address');
+                    if (address === undefined ) { address = ''; }
+                }
+                if (address) {
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent(address));
+                }
+
+                $('input[data-meest=warehouse]').val(address).attr('value',address);
+                $('span[data-meest=warehouse] input').on('change',  function() {
+                    $('#input-shipping-address-1').val($(this).val());
+                    localStorage.setItem(meest_service, $(this).val());
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent($(this).val()));
+                });
+            } else if (meest_service =='meest2.courier') {
+                var html = '</label><span  class="data-meest" data-meest="courier"><br><?php echo $text_meest2_courier; ?><input type="text" class="form-control" /></span><label class="data-meest">';
+                active_ship.parent().after(html);
+                let address = localStorage.getItem(meest_service);
+                if (address == null ) {
+                    address = active_ship.attr('data-address');
+                    if (address === undefined ) { address = ''; }
+                }
+                if (address) {
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent(address));
+                }
+                $('span[data-meest=courier] input').val(address).attr('value',address);
+                $('span[data-meest=courier] input').on('change',  function() {
+                    $('#input-shipping-address-1').val($(this).val());
+                    active_ship.attr('data-address', $(this).val());
+                    localStorage.setItem(meest_service, $(this).val());
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent($(this).val()));
+                });
+            }
+            var element;
+            let m_service = meest_service.split('.');
+            let m_serv = m_service[1];
+
+            $('span input[data-meest=' + m_serv + ']').autocomplete({
+                'source': function(request, response) {
+                    element = $(this);
+                    $.ajax({
+                        url: 'index.php?route=extension/module/meest2/search&service=' + m_serv + '&filter_name=' +  encodeURIComponent(request),
+                        dataType: 'json',
+                        success: function(json) {
+                            response($.map(json, function(item) {
+                                return {
+                                    label: item['name'],
+                                    value: item['br_id'],
+                                    place: item['anyfield']
+                                }
+                            }));
+                        }
+                    });
+                },
+                'select': function(item) {
+                    element.val(item['label']);
+                    if (item['place']) {
+                        var link = '<a target="_blank" href="https://www.google.com/maps/' + item['place'] + '" >Показать на карте</a>';
+                        $('#meest-tmp').remove();
+                        $('<div id="meest-tmp">' + link + '</div>').insertAfter($('span input[data-meest=' + m_serv + ']'))
+                    }
+                    active_ship.attr('data-address', item['label']);
+                    localStorage.setItem(meest_service, item['label']);
+                    $.post('index.php?route=extension/module/meest2/save','address=' + encodeURIComponent(item['label']));
+                }
+            });
+        }
+    }
+    if (typeof $.fn.autocomplete == 'function') {
+        meest2();
+    } else {
+        document.addEventListener('DOMContentLoaded', function() {
+            meest2();
+        })
+    }
+</script>

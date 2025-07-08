@@ -1,0 +1,352 @@
+{#<script>#}
+{#    $('input[type="radio"][name="shipping_method"]').change(function(){#}
+{#        const val = $(this).val();#}
+{#        if (val.indexOf('meest2.') !== -1) {#}
+{#            $('.data-meest').remove();#}
+{#            meest2();#}
+{#        } else {#}
+{#            $('.data-meest').remove();#}
+{#        }#}
+{#    });#}
+{#    const meestDelivery = ["meest2.courier", "meest2.postomat", "meest2.warehouse"];#}
+
+{#    function meest2(){#}
+{#        const active_ship = $('input[type="radio"][name="shipping_method"]:checked');#}
+{#        const meest_service = active_ship.val();#}
+
+{#        if (meestDelivery.indexOf(meest_service) !== -1) {#}
+{#            if (meest_service === 'meest2.postomat') {#}
+{#                const {branchAddress, inputCity} = renderInputs(#}
+{#                    'postomat',#}
+{#                    `{{ text_meest2_postomat }}`,#}
+{#                    `{{ text_meest2_search_city }}`#}
+{#                );#}
+{#                active_ship.parent().after(branchAddress);#}
+{#                active_ship.parent().after(inputCity);#}
+
+
+{#                const address = localStorage.getItem(`${meest_service}_branch`),#}
+{#                    city = localStorage.getItem(`${meest_service}_city`),#}
+{#                    cityId = localStorage.getItem(`${meest_service}_city_id`),#}
+{#                    input = $('input[data-meest=postomat]');#}
+
+{#                if (address && city) {#}
+{#                    $('input[data-meest=city]').val(city).attr('value', city);#}
+{#                    input#}
+{#                        .val(address)#}
+{#                        .attr('value', address)#}
+{#                        .attr('data-city-id', cityId)#}
+{#                        .removeAttr('disabled');#}
+
+{#                    saveAddress(city, address);#}
+{#                }#}
+
+{#                if (address && cityId) {#}
+{#                    place('postomat');#}
+{#                }#}
+
+{#                $('span[data-meest=postomat] input').on('change',  function() {#}
+{#                    $('#input-shipping-address-1').val($(this).val());#}
+{#                    localStorage.setItem(`${meest_service}_branch`, $(this).val());#}
+{#                    saveAddress(city, $(this).val());#}
+{#                });#}
+{#            } else if (meest_service === 'meest2.warehouse') {#}
+{#                const {branchAddress, inputCity} = renderInputs(#}
+{#                    'warehouse',#}
+{#                    `{{ text_meest2_warehouse }}`,#}
+{#                    `{{ text_meest2_search_city }}`#}
+{#                );#}
+{#                active_ship.parent().after(branchAddress);#}
+{#                active_ship.parent().after(inputCity);#}
+
+{#                const address = localStorage.getItem(`${meest_service}_branch`),#}
+{#                    city = localStorage.getItem(`${meest_service}_city`),#}
+{#                    cityId = localStorage.getItem(`${meest_service}_city_id`),#}
+{#                    input = $('input[data-meest=warehouse]');#}
+
+{#                if (address && city) {#}
+{#                    $('input[data-meest=city]').val(city).attr('value', city);#}
+{#                    input#}
+{#                        .val(address)#}
+{#                        .attr('value', address)#}
+{#                        .attr('data-city-id', cityId)#}
+{#                        .removeAttr('disabled');#}
+
+{#                    saveAddress(city, address);#}
+{#                }#}
+
+{#                if (address && cityId) {#}
+{#                    place('warehouse');#}
+{#                }#}
+
+{#                $('span[data-meest=warehouse] input').on('change',  function() {#}
+{#                    $('#input-shipping-address-1').val($(this).val());#}
+{#                    localStorage.setItem(`${meest_service}_branch`, $(this).val());#}
+{#                    saveAddress(city, $(this).val());#}
+{#                });#}
+{#            } else if (meest_service === 'meest2.courier') {#}
+{#                const inputAddress = '<span  class="data-meest" data-meest="courier"><br>{{ text_meest2_courier }}<input disabled id="meestAddress" type="text" class="form-control" placeholder="{{ text_meest2_courier }}"/></span>';#}
+{#                const inputCity = '<span  class="data-meest" data-meest="courier"><br>{{ text_meest2_search_city }}<input id="meestCity" type="text" class="form-control" placeholder="{{ text_meest2_search_city }}"/></span>';#}
+{#                active_ship.parent().after(inputAddress);#}
+{#                active_ship.parent().after(inputCity);#}
+
+{#                let address = localStorage.getItem(`${meest_service}_address`),#}
+{#                    city = localStorage.getItem(`${meest_service}_city`),#}
+{#                    cityId = localStorage.getItem(`${meest_service}_city_id`),#}
+{#                    input = $('#meestAddress');#}
+
+{#                if (address && city) {#}
+{#                    input.removeAttr('disabled');#}
+{#                    $('#meestCity').val(city).attr('value', city);#}
+{#                    input.val(address).attr('value', address).attr('data-city-id', cityId);#}
+
+{#                    saveAddress(city, address);#}
+{#                }#}
+
+{#                if (cityId) {#}
+{#                    input.removeAttr('disabled');#}
+{#                }#}
+
+{#                input.on('change',  function() {#}
+{#                    $('#input-shipping-address-1').val(`${meest_service}_address`, $(this).val());#}
+{#                    localStorage.setItem(`${meest_service}_address`, $(this).val());#}
+{#                    saveAddress(`${$('#meestCity').val()}`, `${$(this).val()}`);#}
+{#                });#}
+{#            }#}
+
+{#            let element,#}
+{#                m_service = meest_service.split('.'),#}
+{#                m_serv = m_service[1],#}
+{#                name = '';#}
+{#            if (m_serv === 'warehouse') {#}
+{#                name = `{{ text_title_warehouse }}`#}
+{#            } else if (m_serv === 'postomat') {#}
+{#                name = `{{ text_title_postomat }}`#}
+{#            }#}
+
+{#            const input = $('input[data-meest=' + m_serv + ']');#}
+
+{#            $(input).autocomplete({#}
+{#                'source': function(request, response) {#}
+{#                    const cityName = $('input[data-meest="city"]').val(),#}
+{#                        value = input.val(),#}
+{#                        savedBranch = localStorage.getItem(`${meest_service}_branch`);#}
+
+{#                    if (value !== savedBranch || value.length === 0) {#}
+{#                        $.ajax({#}
+{#                            url: 'index.php?route=extension/module/meest2/search&service=' + m_serv +#}
+{#                                '&filter_name=' +  encodeURIComponent(request) + '&name=' + name#}
+{#                                 + '&city_name=' + cityName,#}
+{#                            dataType: 'json',#}
+{#                            success: function(json) {#}
+{#                                response($.map(json, function(item) {#}
+{#                                    return {#}
+{#                                        label: item['name'],#}
+{#                                        address: item['address'],#}
+{#                                        value: item['br_id'],#}
+{#                                        place: item['anyfield']#}
+{#                                    }#}
+{#                                }));#}
+{#                            }#}
+{#                        });#}
+{#                    }#}
+{#                },#}
+{#                'select': function(item) {#}
+{#                    input.val(item['address']).attr('data-address', item['address']);#}
+
+{#                    if (item['place']) {#}
+{#                        const link = '<a target="_blank" href="https://www.google.com/maps/' + item['place'] + '" >Показати на мапі</a>';#}
+{#                        $('#meest-tmp').remove();#}
+{#                        $('<div id="meest-tmp">' + link + '</div>').insertAfter($('span input[data-meest=' + m_serv + ']'))#}
+{#                        localStorage.setItem(`${meest_service}_place`, item['place']);#}
+{#                    }#}
+
+{#                    const city = localStorage.getItem(`${meest_service}_city`);#}
+{#                    localStorage.setItem(`${meest_service}_branch`, item['address']);#}
+
+{#                    saveAddress(city, item['address']);#}
+{#                }#}
+{#            });#}
+
+{#            $('input[data-meest=city]').autocomplete({#}
+{#                'source': function(request, response) {#}
+{#                    element = $(this);#}
+
+{#                    const disabled = input.attr('disabled'),#}
+{#                        value = $('input[data-meest=city]').val(),#}
+{#                        savedCityId = localStorage.getItem(`${meest_service}_city`);#}
+
+{#                    if (!disabled && request.length < 1) {#}
+{#                        input#}
+{#                            .attr('disabled', true)#}
+{#                            .attr('data-city-id', null)#}
+{#                            .attr('value', '')#}
+{#                            .val('');#}
+{#                        $('#meest-tmp').remove();#}
+{#                    }#}
+
+{#                    if (value !== savedCityId) {#}
+{#                        input#}
+{#                            .attr('disabled', true)#}
+{#                            .attr('data-city-id', null)#}
+{#                            .attr('value', '')#}
+{#                            .val('');#}
+{#                        $('#meest-tmp').remove();#}
+
+{#                        $.ajax({#}
+{#                            url: 'index.php?route=extension/module/meest2/searchCity&filter_name='#}
+{#                                +  encodeURIComponent(request) + '&service=' + m_serv,#}
+{#                            dataType: 'json',#}
+{#                            success: function(json) {#}
+{#                                response($.map(json, function(item) {#}
+{#                                    return {#}
+{#                                        label: item['place'],#}
+{#                                        city: item['city'],#}
+{#                                        value: item['city_id'],#}
+{#                                    }#}
+{#                                }));#}
+{#                            }#}
+{#                        });#}
+{#                    }#}
+{#                },#}
+{#                'select': function(item) {#}
+{#                    element#}
+{#                        .val(item['city'])#}
+{#                        .attr('value', item['city'])#}
+{#                        .attr('data-address', item['city']);#}
+
+{#                    let savedCityId = localStorage.getItem(`${meest_service}_city_id`);#}
+
+{#                    input.removeAttr('disabled').attr('data-city-id', item['value']);#}
+
+{#                    if (savedCityId !== item['value']) {#}
+{#                        $('input[data-meest=' + m_serv + ']').val('');#}
+{#                        $('#meest-tmp').remove();#}
+{#                    }#}
+
+{#                    localStorage.setItem(`${meest_service}_city`, item['city']);#}
+{#                    localStorage.setItem(`${meest_service}_city_id`, item['value']);#}
+{#                }#}
+{#            });#}
+
+{#            $('#meestCity').autocomplete({#}
+{#                'source': function(request, response) {#}
+{#                    element = $(this);#}
+
+{#                    const disabled = element.attr('disabled'),#}
+{#                        value = element.val(),#}
+{#                        savedCityId = localStorage.getItem(`${meest_service}_city`);#}
+
+{#                    if (!disabled && request.length < 1) {#}
+{#                        $('#meestAddress')#}
+{#                            .attr('disabled', true)#}
+{#                            .attr('data-city-id', null)#}
+{#                            .attr('value', '')#}
+{#                            .val('');#}
+{#                    }#}
+
+{#                    if (request.length > 2 && value !== savedCityId) {#}
+{#                        $.ajax({#}
+{#                            url: 'index.php?route=extension/module/meest2/searchCityWithDelivery&filter_name='#}
+{#                                +  encodeURIComponent(request),#}
+{#                            dataType: 'json',#}
+{#                            success: function(json) {#}
+{#                                response($.map(json, function(item) {#}
+{#                                    return {#}
+{#                                        label: item['message'] ?? item['address'],#}
+{#                                        value: item['city_id'],#}
+{#                                    }#}
+{#                                }));#}
+{#                            }#}
+{#                        });#}
+{#                    }#}
+{#                },#}
+{#                'select': function(item) {#}
+{#                    if (item['value']) {#}
+{#                        element.val(item['label']).attr('value', item['label']);#}
+{#                        localStorage.setItem(`${meest_service}_city`, item['label']);#}
+{#                        localStorage.setItem(`${meest_service}_city_id`, item['value']);#}
+
+{#                        $('#meestAddress').removeAttr('disabled').attr('data-city-id', item['value']);#}
+{#                    } else {#}
+{#                        element.val('');#}
+{#                    }#}
+{#                }#}
+{#            });#}
+
+{#            $('#meestAddress').autocomplete({#}
+{#                'source': function(request, response) {#}
+{#                    element = $(this);#}
+{#                    const cityId = $(element).attr('data-city-id');#}
+
+{#                    if (request.length > 0) {#}
+{#                        $.ajax({#}
+{#                            url: 'index.php?route=extension/module/meest2/searchStreets&filter_name='#}
+{#                                +  encodeURIComponent(request) + '&city_id=' + cityId,#}
+{#                            dataType: 'json',#}
+{#                            success: function(json) {#}
+{#                                response($.map(json, function(item) {#}
+{#                                    return {#}
+{#                                        label: item['message'] ?? item['street'],#}
+{#                                        value: item['street'],#}
+{#                                    }#}
+{#                                }));#}
+{#                            }#}
+{#                        });#}
+{#                    }#}
+{#                },#}
+{#                'select': function(item) {#}
+{#                    element#}
+{#                        .val(item['label'])#}
+{#                        .attr('data-value', item['label'])#}
+{#                        .attr('value', item['label'])#}
+{#                        .focus();#}
+
+{#                    const city = localStorage.getItem(`${meest_service}_city`);#}
+
+{#                    localStorage.setItem(`${meest_service}_address`, element.val());#}
+{#                    saveAddress(city, element.val());#}
+{#                }#}
+{#            });#}
+{#        }#}
+{#    }#}
+
+{#    function saveAddress(city, address) {#}
+{#        $.post('index.php?route=extension/module/meest2/save',#}
+{#            'address=' + encodeURIComponent(`${city}, ${address}`)#}
+{#        );#}
+{#    }#}
+
+{#    function place(type) {#}
+{#        let place = localStorage.getItem(`meest2.${type}_place`);#}
+{#        let link = '<a target="_blank" href="https://www.google.com/maps/' + place + '" >Показати на мапі</a>';#}
+{#        $('#meest-tmp').remove();#}
+{#        $('<div id="meest-tmp">' + link + '</div>').insertAfter($(`span input[data-meest=${type}]`));#}
+{#    }#}
+
+{#    function renderInputs(type, textInputBranch, textInputCity) {#}
+{#        let branchAddress = `#}
+{#                <span class="data-meest" data-meest="${type}">#}
+{#                    <br>${textInputBranch}#}
+{#                    <input disabled type="text" class="form-control" data-meest="${type}" placeholder="${textInputBranch}"/>#}
+{#                </span>`,#}
+{#            inputCity = `#}
+{#                <span class="data-meest" data-meest="city">#}
+{#                    <br>${textInputCity}#}
+{#                    <input type="text" class="form-control" data-meest="city" placeholder="${textInputCity}"/>#}
+{#                </span>`;#}
+
+{#        return {#}
+{#            branchAddress: branchAddress,#}
+{#            inputCity: inputCity#}
+{#        }#}
+{#    }#}
+
+{#    if (typeof $.fn.autocomplete == 'function') {#}
+{#        meest2();#}
+{#    } else {#}
+{#        document.addEventListener('DOMContentLoaded', function() {#}
+{#            meest2();#}
+{#        })#}
+{#    }#}
+{#</script>#}

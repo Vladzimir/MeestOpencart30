@@ -1,0 +1,480 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="title-wrapper">
+                        <h1 id="heading-title">{{ heading_title }}</h1>
+                    </div>
+                    <div>
+                        <ul class="breadcrumb custom-breadcrumb">
+                            {% for breadcrumb in breadcrumbs %}
+                                <li class="breadcrumb-item">
+                                    <a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="submit" form="form-meest" class="btn btn-icon-save" title="{{ button_save }}" data-toggle="tooltip" data-original-title="Save">
+                        <i class="fa fa-save"></i>
+                    </button>
+                    <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default">
+                        <i class="fa fa-reply"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid meest2-body">
+        {% if error_warning_meest %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning_meest }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="meest2-page-header">
+            <h1> {{ text_edit }}</h1>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-setting" data-toggle="tab">{{ tab_setting }}</a></li>
+            <li><a href="#tab-database" data-toggle="tab">{{ tab_database }}</a></li>
+            <li><a href="#tab-sender" data-toggle="tab">{{ tab_sender }}</a></li>
+            <li><a href="#tab-contract" data-toggle="tab">{{ tab_contract }}</a></li>
+            <li><a href="#tab-contact" data-toggle="tab">{{ tab_contact }}</a></li>
+            <li><a href="#tab-help" data-toggle="tab">{{ tab_help }}</a></li>
+        </ul>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-meest" class="form-horizontal">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-setting">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="input-tax-class">{{ entry_tax_class }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_tax_class_id" id="input-tax-class" class="form-control">
+                                        <option value="0">{{ text_none }}</option>
+                                        {% for tax_class in tax_classes %}
+                                            <option value="{{ tax_class.tax_class_id }}" {% if tax_class.tax_class_id == shipping_meest2_tax_class_id %}selected{% endif %}>{{ tax_class.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="input-geo-zone">{{ entry_geo_zone }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_geo_zone_id" id="input-geo-zone" class="form-control">
+                                        <option value="0">{{ text_all_zones }}</option>
+                                        {% for geo_zone in geo_zones %}
+                                            <option value="{{ geo_zone.geo_zone_id }}" {% if geo_zone.geo_zone_id == shipping_meest2_geo_zone_id %}selected{% endif %}>{{ geo_zone.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">{{ entry_service }}</label>
+                                <div class="col-sm-10">
+                                    <div class="delivery-method-box p-4">
+                                        {% for service in services %}
+                                            <div class="form-row align-items-center delivery-method-line mb-3">
+                                                <div class="col-md-6 d-flex align-items-center gap-2">
+                                                    <input type="checkbox" class="form-check-input styled-checkbox" name="shipping_meest2_service[]" value="{{ service.value }}" {% if service.value in shipping_meest2_service %}checked{% endif %}>
+                                                    <label class="meest2-label">{{ service.text }}</label>
+                                                </div>
+                                                <div class="meest2-div-text">
+                                                    {{ entry_cost }}
+                                                </div>
+                                                <div class="meest2-div-input">
+                                                    <input type="text" name="shipping_meest2_cost[{{ service.value }}]" value="{{ shipping_meest2_cost[service.value] }}" class="form-control meest2-input-cost" placeholder="{{ entry_cost }}">
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="meest2-select-unselect">
+                                        <button type="button" onclick="$(this).closest('.form-group').find(':checkbox').prop('checked', true);" class="btn btn-link p-0">{{ text_select_all }}</button> /
+                                        <button type="button" onclick="$(this).closest('.form-group').find(':checkbox').prop('checked', false);" class="btn btn-link p-0">{{ text_unselect_all }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="input-calculation-in-checkout">
+                                    {{ calculation_in_checkout }}
+                                </label>
+                                <div class="col-sm-10">
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="input-calculation-in-checkout"
+                                                name="shipping_meest2_calculation_in_checkout"
+                                                value="1"
+                                                {% if shipping_meest2_calculation_in_checkout %}checked{% endif %} />
+                                        <label class="custom-control-label" for="input-calculation-in-checkout"></label>
+                                        <div class="meest2-info-box">
+                                            <div class="meest2-calculate-info">{{ calculation_in_checkout_info }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="input-status">{{ entry_status }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_status" id="input-status" class="form-control">
+                                        <option value="1" {% if shipping_meest2_status %}selected{% endif %}>{{ text_enabled }}</option>
+                                        <option value="0" {% if not shipping_meest2_status %}selected{% endif %}>{{ text_disabled }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="input-auth-mode">{{ entry_auth_mode }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_auth_mode" id="input-auth-mode" class="form-control">
+                                        <option value="default" {% if shipping_meest2_auth_mode == 'default' %}selected{% endif %}>Default (Login/Password)</option>
+                                        <option value="api_key" {% if shipping_meest2_auth_mode == 'api_key' %}selected{% endif %}>Token</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="token-description" class="card mt-2" style="display: none;">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="fa fa-info-circle"></i> Інструкція для отримання Token
+                                    </h5>
+                                    <ul class="mb-0">
+                                        <li>Зареєструйтесь в Особистому кабінеті за посиланням <a href="https://24.meest.com" target="_blank">https://24.meest.com</a>.</li>
+                                        <li>Натисніть в боковому меню на кнопку Налаштування.</li>
+                                        <li>Перейдіть на вкладку API інтеграції.</li>
+                                        <li>Натисніть кнопку Укласти договір і в результаті Ви отримаєте token.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="auth-default" class="form-group row" {% if shipping_meest2_auth_mode != 'default' %} style="display: none;" {% endif %}>
+                                <label class="col-sm-2 col-form-label" for="input-login">{{ entry_login }}</label>
+                                <div class="col-sm-10 mb-3">
+                                    <input type="text" name="shipping_meest2_login" value="{{ shipping_meest2_login }}" id="input-login" class="form-control" placeholder="{{ entry_login }}" style="margin-bottom: 16px;">
+                                </div>
+                                <label class="col-sm-2 col-form-label" for="input-password">{{ entry_password }}</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="shipping_meest2_password" value="{{ shipping_meest2_password }}" id="input-password" class="form-control" placeholder="{{ entry_password }}">
+                                </div>
+                            </div>
+
+                            <div id="auth-api-key" class="form-group row" {% if shipping_meest2_auth_mode != 'api_key' %} style="display: none;" {% endif %}>
+                                <label class="col-sm-2 col-form-label" for="input-api-key">{{ entry_api_key }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="shipping_meest2_api_key" value="{{ shipping_meest2_api_key }}" id="input-api-key" class="form-control" placeholder="{{ entry_api_key }}">
+                                    <div class="meest2-info-box">
+                                        <div class="meest2-info-title">Для отримання ключа (token) виконайте наступні кроки:</div>
+                                        <ul class="meest2-info-list">
+                                            <li>Зареєструйтесь в Особистому кабінеті за посиланням
+                                                <a href="https://24.meest.com" target="_blank">https://24.meest.com</a>.
+                                            </li>
+                                            <li>Натисніть в боковому меню на кнопку Налаштування.</li>
+                                            <li>Перейдіть на вкладку API інтеграції.</li>
+                                            <li>Натисніть кнопку Укласти договір і в результаті Ви отримаєте token.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="input-sort-order">{{ entry_sort_order }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="shipping_meest2_sort_order" value="{{ shipping_meest2_sort_order }}" id="input-sort-order" class="form-control" placeholder="{{ entry_sort_order }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="tab-database">
+                            <div class="custom-table-wrapper">
+                                <div class="custom-table-row header">
+                                    <div>{{ entry_type_of_data }}</div>
+                                    <div>{{ entry_last_updated }}</div>
+                                    <div>{{ entry_amount }}</div>
+                                    <div>{{ entry_description }}</div>
+                                    <div>{{ entry_action }}</div>
+                                </div>
+
+                                <div class="custom-table-row">
+                                    <div>Region</div>
+                                    <div>{{ regions_import_info.latest_update_date }}</div>
+                                    <div>{{ regions_import_info.total_records }}</div>
+                                    <div>It will be updated regions list of the Meest company. The action will not affect the standard regions</div>
+                                    <div>
+                                        <a onclick="updateRegions()" id="button-update_region" data-toggle="tooltip" title="Refresh" class="btn btn-icon">
+                                            <i class="fa fa-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="custom-table-row">
+                                    <div>City</div>
+                                    <div>{{ cities_import_info.latest_update_date }}</div>
+                                    <div>{{ cities_import_info.total_records }}</div>
+                                    <div>It will be updated cities in which can be delivered by the Meest company</div>
+                                    <div>
+                                        <a onclick="updateCities()" id="button-update_cities" data-toggle="tooltip" title="Refresh" class="btn btn-icon">
+                                            <i class="fa fa-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="custom-table-row">
+                                    <div>Branch</div>
+                                    <div>{{ branch_import_info.latest_update_date }}</div>
+                                    <div>{{ branch_import_info.total_records }}</div>
+                                    <div>It will be updated branches of the Meest company</div>
+                                    <div>
+                                        <a id="button-update_branches" class="btn btn-icon" data-toggle="tooltip" title="Update Branch Database" onclick="return confirm('This operation may take three hours. Are you impressed?') ? updateBranches() : false;">
+                                            <i class="fa fa-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="custom-table-row">
+                                    <div>Streets</div>
+                                    <div>{{ streets_import_info.latest_update_date }}</div>
+                                    <div>{{ streets_import_info.total_records }}</div>
+                                    <div>It will be updated streets of the Meest company</div>
+                                    <div>
+                                        <a onclick="updateStreets()" id="button-update_address" data-toggle="tooltip" title="Refresh" class="btn btn-icon">
+                                            <i class="fa fa-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="custom-loader" style="display: none;">
+                            <div class="loader-background"></div>
+                            <div class="loader-content">
+                                <div class="spinner"></div>
+                                <p id="loader-text">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-sender">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sender-contract-id">{{ entry_contract_id }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_sender_contract_id" id="input-sender-contract-id" class="form-control">
+                                        <option value="">{{ text_select_contract }}</option>
+                                        {% for contract in contracts %}
+                                            <option value="{{ contract.contractID }}" {% if contract.contractID == shipping_meest2_sender_contract_id %}selected{% endif %}>
+                                                {{ contract.contractID }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sender-contact-person">{{ entry_sender_contact_person }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_sender_contact_person" id="input-sender-contact-person" class="form-control">
+                                        <option value="">{{ text_select }}</option>
+                                        {% for contact in contacts %}
+                                            <option value="{{ contact.id }}" {% if contact.id == shipping_meest2_sender_contact_person %}selected{% endif %}>
+                                                {{ contact.firstname }} {{ contact.lastname }} {{ contact.middlename }} - {{ contact.phone }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sender-region">{{ entry_sender_region }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_sender_region" id="input-sender-region" class="form-control">
+                                        <option value="">{{ text_select }}</option>
+                                        {% for region in regions %}
+                                            <option value="{{ region.region_id }}" {% if region.region_id == shipping_meest2_sender_region %}selected{% endif %}>
+                                                {{ region.region_name_ua }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sender-city">{{ entry_sender_city }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_sender_city" id="input-sender-city" class="form-control">
+                                        <option value="">{{ text_select }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sender-address">{{ entry_sender_street }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_sender_address" id="input-sender-address" class="form-control">
+                                        <option value="">{{ text_select }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-sender-branch">{{ entry_branch }}</label>
+                                <div class="col-sm-10">
+                                    <select name="shipping_meest2_sender_branch" id="input-sender-branch" class="form-control">
+                                        <option value="">{{ text_select }}</option>
+                                    </select>
+                                </div>
+                            </div>
+{#                            <div class="form-group">#}
+{#                                <label class="col-sm-2 control-label" for="input-sender-address-pick-up">{{ entry_sender_address_pick_up }}</label>#}
+{#                                <div class="col-sm-10">#}
+{#                                    <div class="delivery-method-line">#}
+{#                                        <input type="checkbox" name="shipping_meest2_sender_address_pick_up" id="input-sender-address-pick-up" class="form-check-input styled-checkbox" value="1" checked="">#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+                        </div>
+                        <div class="tab-pane" id="tab-contract">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-contract-id">{{ text_contract_id }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="contract_id" id="input-contract-id" class="form-control" placeholder="{{ text_enter_contract_id }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="button" id="button-add-contract" class="btn btn-primary">{{ button_add_contract }}</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-contracts-table">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ column_contract_id }}</th>
+                                        <th>{{ column_date_created }}</th>
+                                        <th>{{ column_date_updated }}</th>
+                                        <th>{{ column_action }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if contracts %}
+                                        {% for contract in contracts %}
+                                            <tr>
+                                                <td>{{ contract.contractID }}</td>
+                                                <td>{{ contract.creatеd_at }}</td>
+                                                <td>{{ contract.updated_at }}</td>
+                                                <td>
+                                                    <button type="button" data-contract-id="{{ contract.contractID }}" class="btn-outline-blue btn-delete-contract">{{ button_delete }}</button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center">{{ text_no_contracts }}</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-contact">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-phone">{{ text_phone }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="phone" id="input-phone" class="form-control" placeholder="{{ text_enter_phone }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-firstname">{{ text_firstname }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="firstname" id="input-firstname" class="form-control" placeholder="{{ text_enter_firstname }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-lastname">{{ text_lastname }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="lastname" id="input-lastname" class="form-control" placeholder="{{ text_enter_lastname }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input-middlename">{{ text_middlename }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="middlename" id="input-middlename" class="form-control" placeholder="{{ text_enter_middlename }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="button" id="button-add-contact" class="btn btn-primary">{{ button_add_contact }}</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-contracts-table">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ column_phone }}</th>
+                                        <th>{{ column_firstname }}</th>
+                                        <th>{{ column_lastname }}</th>
+                                        <th>{{ column_middlename }}</th>
+                                        <th>{{ column_action }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if contacts %}
+                                        {% for contact in contacts %}
+                                            <tr>
+                                                <td>{{ contact.phone }}</td>
+                                                <td>{{ contact.firstname }}</td>
+                                                <td>{{ contact.lastname }}</td>
+                                                <td>{{ contact.middlename }}</td>
+                                                <td>
+                                                    <button type="button" data-contact-id="{{ contact.id }}" class="btn-outline-blue btn-delete-contact">{{ button_delete }}</button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">{{ text_no_contacts }}</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-help">
+                            <div>{{ help_text_meest }}</div>
+                            <div>{{ help_text_about }}</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    window.meest2Urls = {
+        importBranches: '{{ importBranches }}',
+        importRegions: '{{ importRegions }}',
+        importCity: '{{ importCity }}',
+        importStreets: '{{ importStreets }}',
+        addContract: '{{ addContract }}',
+        deleteContract: '{{ deleteContract }}',
+        addContact: '{{ addContact }}',
+        deleteContact: '{{ deleteContact }}',
+        ajax_get_cities_url: '{{ ajax_get_cities_url }}',
+        ajax_get_addresses_url: '{{ ajax_get_addresses_url }}',
+        ajax_get_branches_url: '{{ ajax_get_branches_url }}',
+        shipping_meest2_sender_region: '{{ shipping_meest2_sender_region }}',
+        shipping_meest2_sender_city: '{{ shipping_meest2_sender_city }}',
+        shipping_meest2_sender_address: '{{ shipping_meest2_sender_address }}',
+        shipping_meest2_sender_branch: '{{ shipping_meest2_sender_branch }}',
+        text_update_success: '{{ text_update_success }}',
+        text_select: '{{ text_select }}',
+        text_error_contract_id: '{{ text_error_contract_id }}',
+        text_error_fill_fields: '{{ text_error_fill_fields }}',
+        text_confirm_delete: '{{ text_confirm_delete }}'
+    };
+</script>
+
+{{ footer }}
